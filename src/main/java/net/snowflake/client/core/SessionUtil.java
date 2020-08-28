@@ -691,7 +691,7 @@ public class SessionUtil {
             sessionId,
             commonParams);
 
-    if (consentCacheIdToken) {
+    if (consentCacheIdToken && asBoolean(loginInput.getSessionParameters().get(CLIENT_STORE_TEMPORARY_CREDENTIAL))) {
       CredentialManager.getInstance().writeTemporaryCredential(loginInput, ret);
     }
     return ret;

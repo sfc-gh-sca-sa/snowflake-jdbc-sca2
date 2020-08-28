@@ -566,6 +566,11 @@
                   <goal>shade</goal>
                 </goals>
                 <configuration>
+                  <artifactSet>
+                    <excludes>
+                      <exclude>net.java.dev.jna:*</exclude>
+                    </excludes>
+                  </artifactSet>
                    <relocations>
                      <relocation>
                        <pattern>net.snowflake.common</pattern>
