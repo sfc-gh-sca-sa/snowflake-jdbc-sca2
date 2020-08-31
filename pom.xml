@@ -294,12 +294,14 @@
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
       <version>${jna.version}</version>
+      <optional>true</optional>
     </dependency>
     <!-- http://mvnrepository.com/artifact/net.java.dev.jna/jna-platform -->
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna-platform</artifactId>
       <version>${jna.version}</version>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 
@@ -566,11 +568,13 @@
                   <goal>shade</goal>
                 </goals>
                 <configuration>
+                  <!--
                   <artifactSet>
                     <excludes>
                       <exclude>net.java.dev.jna:*</exclude>
                     </excludes>
                   </artifactSet>
+                  -->
                    <relocations>
                      <relocation>
                        <pattern>net.snowflake.common</pattern>
