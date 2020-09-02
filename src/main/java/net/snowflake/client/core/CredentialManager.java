@@ -5,11 +5,12 @@
 package net.snowflake.client.core;
 
 import com.google.common.base.Strings;
-import java.net.MalformedURLException;
-import java.net.URL;
 import net.snowflake.client.jdbc.ErrorCode;
 import net.snowflake.client.log.SFLogger;
 import net.snowflake.client.log.SFLoggerFactory;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class CredentialManager {
   private static final SFLogger logger = SFLoggerFactory.getLogger(CredentialManager.class);
@@ -46,9 +47,13 @@ public class CredentialManager {
    * @param loginInput login input to attach id token
    */
   synchronized void fillCachedIdToken(SFLoginInput loginInput) throws SFException {
-    String idToken =
-        secureStorageManager.getCredential(
+    String idToken = null;
+    try {
+        idToken = secureStorageManager.getCredential(
             extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName());
+    } catch (NoClassDefFoundError error) {
+      logger.debug("Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
+    }
 
     if (idToken == null) {
       logger.debug("retrieved idToken is null");
@@ -70,14 +75,21 @@ public class CredentialManager {
       logger.debug("no idToken is given.");
       return; // no idToken
     }
-
-    secureStorageManager.setCredential(
+    try {
+      secureStorageManager.setCredential(
         extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName(), idToken);
+    } catch (NoClassDefFoundError error) {
+      logger.debug("Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
+    }
   }
 
   /** Delete the id token cache */
   void deleteIdTokenCache(String host, String user) {
-    secureStorageManager.deleteCredential(host, user);
+    try {
+      secureStorageManager.deleteCredential(host, user);
+    } catch (NoClassDefFoundError error) {
+      logger.debug("Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
+    }
   }
 
   /**
