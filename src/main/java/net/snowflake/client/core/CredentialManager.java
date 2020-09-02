@@ -5,12 +5,11 @@
 package net.snowflake.client.core;
 
 import com.google.common.base.Strings;
+import java.net.MalformedURLException;
+import java.net.URL;
 import net.snowflake.client.jdbc.ErrorCode;
 import net.snowflake.client.log.SFLogger;
 import net.snowflake.client.log.SFLoggerFactory;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class CredentialManager {
   private static final SFLogger logger = SFLoggerFactory.getLogger(CredentialManager.class);
@@ -49,10 +48,12 @@ public class CredentialManager {
   synchronized void fillCachedIdToken(SFLoginInput loginInput) throws SFException {
     String idToken = null;
     try {
-        idToken = secureStorageManager.getCredential(
-            extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName());
+      idToken =
+          secureStorageManager.getCredential(
+              extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName());
     } catch (NoClassDefFoundError error) {
-      logger.debug("Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
+      logger.debug(
+          "Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
     }
 
     if (idToken == null) {
@@ -77,9 +78,10 @@ public class CredentialManager {
     }
     try {
       secureStorageManager.setCredential(
-        extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName(), idToken);
+          extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName(), idToken);
     } catch (NoClassDefFoundError error) {
-      logger.debug("Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
+      logger.debug(
+          "Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
     }
   }
 
@@ -88,7 +90,8 @@ public class CredentialManager {
     try {
       secureStorageManager.deleteCredential(host, user);
     } catch (NoClassDefFoundError error) {
-      logger.debug("Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
+      logger.debug(
+          "Tried to use Secure Local Storage without providing needed JNA jar files. Please follow the Snowflake JDBC instruction for Secure Local Storage feature.");
     }
   }
 

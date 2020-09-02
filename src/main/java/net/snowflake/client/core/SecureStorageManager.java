@@ -12,7 +12,8 @@ interface SecureStorageManager {
   String DRIVER_NAME = "SNOWFLAKE-JDBC-DRIVER";
   int COLON_CHAR_LENGTH = 1;
 
-  SecureStorageStatus setCredential(String host, String user, String token) throws NoClassDefFoundError;
+  SecureStorageStatus setCredential(String host, String user, String token)
+      throws NoClassDefFoundError;
 
   String getCredential(String host, String user) throws NoClassDefFoundError;
 
