@@ -21,11 +21,12 @@ public class SecureStorageAppleManager implements SecureStorageManager {
     securityLib = SecurityLibManager.getInstance();
   }
 
-  public static SecureStorageAppleManager builder() {
+  public static SecureStorageAppleManager builder() throws NoClassDefFoundError {
     return new SecureStorageAppleManager();
   }
 
-  public SecureStorageStatus setCredential(String host, String user, String cred) {
+  public SecureStorageStatus setCredential(String host, String user, String cred)
+      throws NoClassDefFoundError {
     if (Strings.isNullOrEmpty(cred)) {
       logger.info("No credential provided");
       return SecureStorageStatus.SUCCESS;
@@ -90,7 +91,7 @@ public class SecureStorageAppleManager implements SecureStorageManager {
     return SecureStorageStatus.SUCCESS;
   }
 
-  public String getCredential(String host, String user) {
+  public String getCredential(String host, String user) throws NoClassDefFoundError {
     String target = SecureStorageManager.convertTarget(host, user);
     byte[] targetBytes = target.getBytes(StandardCharsets.UTF_8);
     byte[] userBytes = user.toUpperCase().getBytes(StandardCharsets.UTF_8);
@@ -139,7 +140,8 @@ public class SecureStorageAppleManager implements SecureStorageManager {
     }
   }
 
-  public SecureStorageStatus deleteCredential(String host, String user) {
+  public SecureStorageStatus deleteCredential(String host, String user)
+      throws NoClassDefFoundError {
     String target = SecureStorageManager.convertTarget(host, user);
     byte[] targetBytes = target.getBytes(StandardCharsets.UTF_8);
     byte[] userBytes = user.toUpperCase().getBytes(StandardCharsets.UTF_8);

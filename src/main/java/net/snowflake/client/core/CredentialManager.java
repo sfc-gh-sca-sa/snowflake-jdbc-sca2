@@ -57,13 +57,21 @@ public class CredentialManager {
       return;
     }
 
-    String idToken =
-        secureStorageManager.getCredential(
-            extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName());
+    String idToken = null;
+    try {
+      idToken =
+          secureStorageManager.getCredential(
+              extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName());
+    } catch (NoClassDefFoundError error) {
+      logger.info(
+          "JNA jar files are needed for Secure Local Storage service. Please follow the Snowflake JDBC instruction for Secure Local Storage feature. Fall back to normal process.");
+      return;
+    }
 
     if (idToken == null) {
       logger.debug("retrieved idToken is null");
     }
+
     loginInput.setIdToken(idToken); // idToken can be null
     return;
   }
@@ -88,8 +96,13 @@ public class CredentialManager {
       return; // no idToken
     }
 
-    secureStorageManager.setCredential(
-        extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName(), idToken);
+    try {
+      secureStorageManager.setCredential(
+          extractHostFromServerUrl(loginInput.getServerUrl()), loginInput.getUserName(), idToken);
+    } catch (NoClassDefFoundError error) {
+      logger.info(
+          "JNA jar files are needed for Secure Local Storage service. Please follow the Snowflake JDBC instruction for Secure Local Storage feature. Fall back to normal process.");
+    }
   }
 
   /** Delete the id token cache */
@@ -100,7 +113,12 @@ public class CredentialManager {
       return;
     }
 
-    secureStorageManager.deleteCredential(host, user);
+    try {
+      secureStorageManager.deleteCredential(host, user);
+    } catch (NoClassDefFoundError error) {
+      logger.info(
+          "JNA jar files are needed for Secure Local Storage service. Please follow the Snowflake JDBC instruction for Secure Local Storage feature. Fall back to normal process.");
+    }
   }
 
   /**

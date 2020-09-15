@@ -5,11 +5,7 @@
 package net.snowflake.client.core;
 
 import com.google.common.base.Strings;
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.Structure;
-import com.sun.jna.WString;
+import com.sun.jna.*;
 import com.sun.jna.platform.win32.WinBase.FILETIME;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
@@ -32,11 +28,12 @@ public class SecureStorageWindowsManager implements SecureStorageManager {
     advapi32Lib = Advapi32LibManager.getInstance();
   }
 
-  public static SecureStorageWindowsManager builder() {
+  public static SecureStorageWindowsManager builder() throws NoClassDefFoundError {
     return new SecureStorageWindowsManager();
   }
 
-  public SecureStorageStatus setCredential(String host, String user, String token) {
+  public SecureStorageStatus setCredential(String host, String user, String token)
+      throws NoClassDefFoundError {
     if (Strings.isNullOrEmpty(token)) {
       logger.info("No token provided");
       return SecureStorageStatus.SUCCESS;
@@ -73,7 +70,7 @@ public class SecureStorageWindowsManager implements SecureStorageManager {
     return SecureStorageStatus.SUCCESS;
   }
 
-  public String getCredential(String host, String user) {
+  public String getCredential(String host, String user) throws NoClassDefFoundError {
     PointerByReference pCredential = new PointerByReference();
     String target = SecureStorageManager.convertTarget(host, user);
 
@@ -125,7 +122,8 @@ public class SecureStorageWindowsManager implements SecureStorageManager {
     }
   }
 
-  public SecureStorageStatus deleteCredential(String host, String user) {
+  public SecureStorageStatus deleteCredential(String host, String user)
+      throws NoClassDefFoundError {
     String target = SecureStorageManager.convertTarget(host, user);
 
     boolean ret = false;
