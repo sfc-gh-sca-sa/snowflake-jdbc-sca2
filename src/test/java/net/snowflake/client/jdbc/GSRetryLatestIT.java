@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 import java.sql.*;
 import java.util.logging.Logger;
 import net.snowflake.client.AbstractDriverIT;
+import net.snowflake.client.ConditionalIgnoreRule;
+import net.snowflake.client.RunningOnGithubAction;
 import net.snowflake.client.category.TestCategoryOthers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -18,6 +20,7 @@ public final class GSRetryLatestIT extends AbstractDriverIT {
 
   /** Test for SNOW-225928: GS Retry was leading to double-inserts */
   @Test
+  @ConditionalIgnoreRule.ConditionalIgnore(condition = RunningOnGithubAction.class)
   public void testGSRetryForDMLWithoutBinds() throws Throwable {
     Connection connection = null;
     Statement statement = null;
@@ -64,6 +67,7 @@ public final class GSRetryLatestIT extends AbstractDriverIT {
 
   /** Test for SNOW-226106: GS Retry was leading to exceptions with binds */
   @Test
+  @ConditionalIgnoreRule.ConditionalIgnore(condition = RunningOnGithubAction.class)
   public void testGSRetryForDMLWithBinds() throws Throwable {
     Connection connection = null;
     Statement statement = null;
