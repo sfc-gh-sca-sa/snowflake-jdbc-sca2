@@ -27,6 +27,8 @@ public final class GSRetryIT extends AbstractDriverIT {
       // Create the table
       statement.execute("create or replace table testGSRetry(col1 number);");
 
+      // Enable the fix
+      statement.executeQuery("alter session set ENABLE_FIX_225928 = true");
       PreparedStatement prepStatement = connection.prepareStatement("insert into testGSRetry values (100);");
       // Execute with GS retry
       int rowCount = testGSRetryHelper(connection, prepStatement, false);
@@ -76,6 +78,8 @@ public final class GSRetryIT extends AbstractDriverIT {
 
       preparedStatement.setInt(1, 100);
 
+      // Enable the fix
+      statement.executeQuery("alter session set ENABLE_FIX_225928 = true");
       // Execute with GS retry
       int rowCount = testGSRetryHelper(connection, preparedStatement, false);
       assertEquals("update count", 1, rowCount);
