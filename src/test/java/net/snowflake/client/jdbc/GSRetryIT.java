@@ -29,7 +29,8 @@ public final class GSRetryIT extends AbstractDriverIT {
 
       // Enable the fix
       statement.executeQuery("alter session set ENABLE_FIX_225928 = true");
-      PreparedStatement prepStatement = connection.prepareStatement("insert into testGSRetry values (100);");
+      PreparedStatement prepStatement =
+          connection.prepareStatement("insert into testGSRetry values (100);");
       // Execute with GS retry
       int rowCount = testGSRetryHelper(connection, prepStatement, false);
       assertEquals("update count", 1, rowCount);
@@ -110,8 +111,7 @@ public final class GSRetryIT extends AbstractDriverIT {
 
       assertFalse(resultSet.next());
       */
-    }
-    finally{
+    } finally {
       if (statement != null) {
         statement.execute("DROP TABLE testGSRetry");
       }
@@ -119,20 +119,21 @@ public final class GSRetryIT extends AbstractDriverIT {
     }
   }
 
-  private int testGSRetryHelper(Connection connection, PreparedStatement prepStatement, boolean useCombinedDescribe)
+  private int testGSRetryHelper(
+      Connection connection, PreparedStatement prepStatement, boolean useCombinedDescribe)
       throws SQLException {
     Statement statement = connection.createStatement();
     setGSRetryParams(statement, useCombinedDescribe);
 
-    // Try an insert using executeBatch(). This will guarantee 2-phase execution: Prepare and Execute
+    // Try an insert using executeBatch(). This will guarantee 2-phase execution: Prepare and
+    // Execute
     try {
-    prepStatement.addBatch();
-    int[] insertCounts;
+      prepStatement.addBatch();
+      int[] insertCounts;
 
       insertCounts = prepStatement.executeBatch();
       return insertCounts[0];
-    }
-    finally {
+    } finally {
       statement.executeQuery("alter session unset GS_FAULT_INJECTION;");
     }
   }
