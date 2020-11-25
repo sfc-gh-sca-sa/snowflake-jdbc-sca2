@@ -6,7 +6,6 @@ package net.snowflake.client.jdbc;
 import static org.junit.Assert.*;
 
 import java.sql.*;
-import java.util.logging.Logger;
 import net.snowflake.client.AbstractDriverIT;
 import net.snowflake.client.ConditionalIgnoreRule;
 import net.snowflake.client.RunningOnGithubAction;
@@ -16,7 +15,6 @@ import org.junit.experimental.categories.Category;
 
 @Category(TestCategoryOthers.class)
 public final class GSRetryLatestIT extends AbstractDriverIT {
-  private static Logger logger = Logger.getLogger(BaseJDBCTest.class.getName());
 
   /** Test for SNOW-225928: GS Retry was leading to double-inserts */
   @Test
@@ -49,15 +47,18 @@ public final class GSRetryLatestIT extends AbstractDriverIT {
       statement.execute("create or replace table testGSRetry(col1 number);");
       // Execute with GS retry and combined_describe
       prepStatement = connection.prepareStatement("insert into testGSRetry values (100);");
-      rowCount = testGSRetryHelper(connection, prepStatement, true);
-      assertEquals("update count", 1, rowCount);
-
-      // Validate there is only 1 entry
-      resultSet = statement.executeQuery("select * from testGSRetry");
-      assertTrue(resultSet.next());
-      assertEquals(100, resultSet.getInt(1));
-      // TODO: This assert will fail until SNOW-227539 is fixed
-      // assertFalse(resultSet.next());
+      boolean noException = false;
+      try {
+        // Do not GS retry for combined_describe
+        statement.executeQuery(
+            "alter session set COMBINED_DESCRIBE_DISABLE_GS_RETRY_FOR_DESCRIBE_STEP = true");
+        testGSRetryHelper(connection, prepStatement, true);
+        noException = true;
+      } catch (Exception ex) {
+        assertTrue(ex.getMessage().contains("Internal error: GS Retry Injection"));
+      } finally {
+        assertFalse("GS retry should not work with combined_describe=true", noException);
+      }
     } finally {
       if (statement != null) {
         statement.execute("DROP TABLE testGSRetry");
@@ -129,8 +130,8 @@ public final class GSRetryLatestIT extends AbstractDriverIT {
     Statement statement = connection.createStatement();
     setGSRetryParams(statement, useCombinedDescribe);
 
-    // Try an insert using executeBatch(). This will guarantee 2-phase execution: Prepare and
-    // Execute
+    // Try an insert using executeBatch(). This will guarantee 2-phase execution:
+    // Prepare and Execute
     try {
       prepStatement.addBatch();
       int[] insertCounts;
