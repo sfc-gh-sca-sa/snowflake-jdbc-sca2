@@ -1,18 +1,19 @@
 package net.snowflake.client.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.HashMap;
-import java.util.Map;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.snowflake.client.core.ObjectMapperFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class SecretDetectorTest {
   @Test
@@ -214,7 +215,7 @@ public class SecretDetectorTest {
     testParametersUnmasked.put("private_key_file", "test");
 
     for (Map.Entry<String, String> entry : testParametersMasked.entrySet()) {
-      assertEquals("****", SecretDetector.maskParameterValue(entry.getKey(), entry.getValue()));
+      assertEquals("******", SecretDetector.maskParameterValue(entry.getKey(), entry.getValue()));
     }
     for (Map.Entry<String, String> entry : testParametersUnmasked.entrySet()) {
       assertEquals("test", SecretDetector.maskParameterValue(entry.getKey(), entry.getValue()));
